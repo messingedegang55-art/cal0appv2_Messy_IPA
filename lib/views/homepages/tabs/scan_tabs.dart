@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class ScanTab extends StatelessWidget {
-  const ScanTab();
+  const ScanTab({super.key});
 
   @override
   Widget build(BuildContext context) {

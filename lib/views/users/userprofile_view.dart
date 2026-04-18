@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:cal0appv2/theme/app_theme.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cal0appv2/viewModels/theme_viewmodel.dart';
 import 'package:cal0appv2/viewModels/usermodel/user_viewmodel.dart';
+// 👆 removed unused ThemeViewModel import
 
 class UserProfileView extends StatefulWidget {
   const UserProfileView({super.key});
@@ -74,7 +74,7 @@ class _UserProfileViewState extends State<UserProfileView> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(vm.successMessage!),
-          backgroundColor: Colors.green,
+          backgroundColor: C0Theme.successGreen, // 👈 use theme color
         ),
       );
     }
@@ -103,7 +103,7 @@ class _UserProfileViewState extends State<UserProfileView> {
       ),
       backgroundColor: c.background,
       body: vm.isLoading
-          ? const Center(child: CircularProgressIndicator())
+          ? Center(child: CircularProgressIndicator(color: c.primary))
           : SingleChildScrollView(
               padding: const EdgeInsets.all(16),
               child: Form(
@@ -122,20 +122,20 @@ class _UserProfileViewState extends State<UserProfileView> {
                               : '?',
                           style: const TextStyle(
                             fontSize: 36,
-                            color: C0Theme.oatmealWhite,
+                            color: Colors.white,
                           ),
                         ),
                       ),
                     ),
                     const SizedBox(height: 24),
 
-                    // Error / success messages
+                    // Banners
                     if (vm.errorMessage != null)
                       _buildBanner(vm.errorMessage!, c.warning),
                     if (vm.successMessage != null)
                       _buildBanner(vm.successMessage!, c.success),
 
-                    // Section: Account info
+                    // Account info
                     _sectionTitle('Account Info', c),
                     _buildTextField(
                       _userName,
@@ -154,7 +154,7 @@ class _UserProfileViewState extends State<UserProfileView> {
                           !v!.contains('@') ? 'Invalid email' : null,
                     ),
 
-                    // Section: Body info
+                    // Body info
                     _sectionTitle('Body Info', c),
                     Row(
                       children: [
@@ -180,23 +180,28 @@ class _UserProfileViewState extends State<UserProfileView> {
                       ],
                     ),
 
-                    // Birthday picker
-                    const SizedBox(height: 12),
+                    // Birthday
+                    const SizedBox(height: 4),
                     ListTile(
                       tileColor: c.card,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),
                       leading: Icon(Icons.cake, color: c.primary),
-                      title: Text('Birthday'),
+                      title: Text(
+                        'Birthday', // 👈 add style
+                        style: TextStyle(color: c.textPrimary),
+                      ),
                       subtitle: Text(
                         '${_birthday.day}/${_birthday.month}/${_birthday.year}',
-                      ),
+                        style: TextStyle(color: c.textSecondary),
+                      ), // 👈 add style
                       onTap: _pickBirthday,
                     ),
                     const SizedBox(height: 12),
 
-                    // Gender
+                    // Preferences
+                    _sectionTitle('Preferences', c),
                     _buildDropdown(
                       'Gender',
                       _gender,
@@ -204,8 +209,6 @@ class _UserProfileViewState extends State<UserProfileView> {
                       (v) => setState(() => _gender = v!),
                       c,
                     ),
-
-                    // Goal
                     _buildDropdown(
                       'Goal',
                       _goal,
@@ -219,8 +222,6 @@ class _UserProfileViewState extends State<UserProfileView> {
                       (v) => setState(() => _goal = v!),
                       c,
                     ),
-
-                    // Activity level
                     _buildDropdown(
                       'Activity Level',
                       _activityLevel,
@@ -235,7 +236,7 @@ class _UserProfileViewState extends State<UserProfileView> {
                       c,
                     ),
 
-                    // Section: Change password
+                    // Change password
                     _sectionTitle('Change Password', c),
                     _buildTextField(
                       _password,
@@ -248,6 +249,13 @@ class _UserProfileViewState extends State<UserProfileView> {
                     SizedBox(
                       width: double.infinity,
                       child: OutlinedButton(
+                        style: OutlinedButton.styleFrom(
+                          side: BorderSide(color: c.primary), // 👈 theme border
+                          foregroundColor: c.primary, // 👈 theme text
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
                         onPressed: _password.text.isNotEmpty
                             ? () => vm.updatePassword(
                                 FirebaseAuth.instance.currentUser!.uid,
@@ -267,6 +275,8 @@ class _UserProfileViewState extends State<UserProfileView> {
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           backgroundColor: c.primary,
+                          foregroundColor: Colors.white,
+                          elevation: 0,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),
                           ),
@@ -275,8 +285,8 @@ class _UserProfileViewState extends State<UserProfileView> {
                         child: const Text(
                           'Save Profile',
                           style: TextStyle(
-                            color: C0Theme.oatmealWhite,
                             fontSize: 16,
+                            fontWeight: FontWeight.w600,
                           ),
                         ),
                       ),
@@ -328,15 +338,37 @@ class _UserProfileViewState extends State<UserProfileView> {
       obscureText: obscure,
       keyboardType: isNumber ? TextInputType.number : TextInputType.text,
       validator: validator,
+      style: TextStyle(color: c.textPrimary, fontSize: 15), // 👈 text color
       decoration: InputDecoration(
         labelText: label,
-        prefixIcon: Icon(icon, color: c.textPrimary),
+        labelStyle: TextStyle(color: c.textSecondary), // 👈 label color
+        prefixIcon: Icon(icon, color: c.primary), // 👈 was c.textPrimary
         filled: true,
-        fillColor: c.textSecondary,
+        fillColor: c.card, // 👈 was c.textSecondary (wrong!)
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 16,
+        ),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
           borderSide: BorderSide.none,
         ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(
+            color: c.textSecondary.withOpacity(0.3),
+            width: 1,
+          ),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: c.primary, width: 1.5),
+        ),
+        errorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: c.warning, width: 1),
+        ),
+        errorMaxLines: 2, // 👈 prevents overflow
       ),
     ),
   );
@@ -351,13 +383,32 @@ class _UserProfileViewState extends State<UserProfileView> {
     padding: const EdgeInsets.only(bottom: 12),
     child: DropdownButtonFormField<String>(
       value: value,
+      dropdownColor: c.card, // 👈 dropdown bg
+      style: TextStyle(color: c.textPrimary, fontSize: 15),
+      icon: Icon(Icons.keyboard_arrow_down, color: c.primary),
       decoration: InputDecoration(
         labelText: label,
+        labelStyle: TextStyle(color: c.textSecondary),
         filled: true,
-        fillColor: c.card,
+        fillColor: c.card, // 👈 was correct
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 16,
+        ),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
           borderSide: BorderSide.none,
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(
+            color: c.textSecondary.withOpacity(0.3),
+            width: 1,
+          ),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: c.primary, width: 1.5),
         ),
       ),
       items: items

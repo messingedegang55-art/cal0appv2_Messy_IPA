@@ -10,6 +10,13 @@ import 'package:cal0appv2/services/logs/debuglog_services.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  FlutterError.onError = (details) {
+    FlutterError.presentError(details);
+    LogService.error("FLUTTER ERROR: ${details.exception}");
+    if (details.stack != null) {
+      LogService.error("STACK TRACE: ${details.stack}");
+    }
+  };
   // await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await Firebase.initializeApp();
   LogService.info("Binding Initialized");
@@ -21,6 +28,7 @@ void main() async {
   } catch (e) {
     LogService.info("Firebase Error: $e");
   }
+
   runApp(const MyApp());
 }
 

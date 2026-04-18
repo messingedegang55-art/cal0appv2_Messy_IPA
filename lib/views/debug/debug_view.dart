@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:cal0appv2/services/logs/debuglog_services.dart';
 
-class DebugView extends StatelessWidget {
+class DebugView extends StatefulWidget {
   const DebugView({super.key});
 
+  @override
+  State<DebugView> createState() => _DebugViewState();
+}
+
+class _DebugViewState extends State<DebugView> {
   @override
   Widget build(BuildContext context) {
     final logs = LogService.getLogs();
@@ -13,21 +19,49 @@ class DebugView extends StatelessWidget {
         title: const Text("System Logs"),
         actions: [
           IconButton(
-            icon: const Icon(Icons.delete),
-            onPressed: () => LogService.clear(),
+            icon: const Icon(Icons.delete_sweep),
+            onPressed: () {
+              setState(() {
+                LogService.clear();
+              });
+            },
           ),
         ],
       ),
-      body: ListView.builder(
-        padding: const EdgeInsets.all(10),
-        itemCount: logs.length,
-        itemBuilder: (context, index) {
-          return Text(
-            logs[index],
-            style: const TextStyle(fontFamily: 'monospace', fontSize: 12),
-          );
-        },
-      ),
+      body: logs.isEmpty
+          ? const Center(child: Text("No logs recorded yet."))
+          : ListView.builder(
+              padding: const EdgeInsets.symmetric(vertical: 10),
+              itemCount: logs.length,
+              itemBuilder: (context, index) {
+                final logEntry = logs[index];
+
+                return ListTile(
+                  dense: true, // Makes it compact like a log console
+                  title: SelectableText(
+                    // Allows highlighting specific words
+                    logEntry,
+                    style: const TextStyle(
+                      fontFamily: 'monospace',
+                      fontSize: 12,
+                      color: Colors.black87,
+                    ),
+                  ),
+                  onLongPress: () {
+                    // Logic to copy the whole line to clipboard
+                    Clipboard.setData(ClipboardData(text: logEntry));
+
+                    // Visual feedback is key for UX!
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text("Copied to clipboard"),
+                        duration: Duration(seconds: 1),
+                      ),
+                    );
+                  },
+                );
+              },
+            ),
     );
   }
 }

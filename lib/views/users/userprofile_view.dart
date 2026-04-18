@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:provider/provider.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cal0appv2/viewModels/usermodel/user_viewmodel.dart';
 
 class UserProfileView extends StatefulWidget {
@@ -39,7 +39,7 @@ class _UserProfileViewState extends State<UserProfileView> {
           _gender = u.gender;
           _goal = u.goal;
           _activityLevel = u.activityLevel;
-          _birthday = u.birthday;
+          _birthday = u.birthday ?? DateTime(2000);
         });
       }
     });
@@ -98,6 +98,7 @@ class _UserProfileViewState extends State<UserProfileView> {
         backgroundColor: Colors.deepPurple,
         foregroundColor: Colors.white,
       ),
+
       body: vm.isLoading
           ? const Center(child: CircularProgressIndicator())
           : SingleChildScrollView(

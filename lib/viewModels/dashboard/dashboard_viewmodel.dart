@@ -18,8 +18,17 @@ class DashboardViewModel extends ChangeNotifier {
   List<FoodLogModel> get foodLogs => _foodLogs;
   String get filter => _filter;
 
-  int get totalCalories =>
-      _foodLogs.fold(0, (sum, log) => sum + int.tryParse(log.calorieIntake)!);
+  // int get totalCalories =>
+  //     _foodLogs.fold(0, (sum, log) => sum + int.tryParse(log.calorieIntake)!);
+
+  //add safe getter to show empty list if food logs are not loaded yet
+  int get totalCalories {
+    if (_foodLogs.isEmpty) return 0;
+    return _foodLogs.fold(
+      0,
+      (sum, log) => sum + (int.tryParse(log.calorieIntake) ?? 0),
+    );
+  }
 
   double get totalProtein => _foodLogs.fold(0.0, (sum, log) => sum);
 
@@ -35,21 +44,23 @@ class DashboardViewModel extends ChangeNotifier {
 
     try {
       _foodLogs = await _foodLogService.getFoodLogs(userId);
-
-      _dashboard = DashboardModel(
-        analysisResult: '',
-        nutrientStatus: _getNutrientStatus(),
-        userId: userId,
-        foodLog: '',
-        scanLog: '',
-        totalCalories: totalCalories,
-        recentFoodLogs: _foodLogs.take(5).toList(),
-        recentSupplements: [],
-      );
     } catch (e) {
-      errorMessage = 'Failed to load dashboard: $e';
+      errorMessage = e.toString();
+      _foodLogs = [];
+      isLoading = false;
+      notifyListeners();
+      return;
     }
-
+    _dashboard = DashboardModel(
+      analysisResult: '',
+      nutrientStatus: _getNutrientStatus(),
+      userId: userId,
+      foodLog: '',
+      scanLog: '',
+      totalCalories: totalCalories,
+      recentFoodLogs: _foodLogs.take(5).toList(),
+      recentSupplements: [],
+    );
     isLoading = false;
     notifyListeners();
   }

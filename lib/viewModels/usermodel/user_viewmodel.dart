@@ -11,6 +11,15 @@ class UserViewModel extends ChangeNotifier {
   String? successMessage;
 
   UserModel? get user => _user;
+  String get userId => _user?.userId ?? '';
+  String get userName => _user?.userName ?? '';
+  String get userEmail => _user?.userEmail ?? '';
+  String get gender => _user?.gender ?? '';
+  String get goal => _user?.goal ?? '';
+  String get activityLevel => _user?.activityLevel ?? '';
+  DateTime? get birthday => _user?.birthday;
+  double? get weight => _user?.weight;
+  double? get height => _user?.height;
 
   Future<void> loadUser(String userId) async {
     isLoading = true;
@@ -22,7 +31,6 @@ class UserViewModel extends ChangeNotifier {
     } catch (e) {
       errorMessage = 'Failed to load user: $e';
     }
-
     isLoading = false;
     notifyListeners();
   }
@@ -44,6 +52,12 @@ class UserViewModel extends ChangeNotifier {
     notifyListeners();
 
     try {
+      if (_user == null) {
+        errorMessage = 'No user data loaded. Please restart the app.';
+        isLoading = false;
+        notifyListeners();
+        return;
+      }
       if (!_isValidEmail(userEmail)) {
         errorMessage = 'Invalid email format';
         isLoading = false;

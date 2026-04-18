@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:cal0appv2/theme/app_theme.dart';
 
 class CalorieRing extends StatelessWidget {
   final int totalCalories;
@@ -15,6 +16,7 @@ class CalorieRing extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final c = C0Theme.of(context);
     final consumed = totalCalories.toDouble();
     final remaining = (target - consumed + burned).clamp(0, target);
     final progress = (consumed / target).clamp(0.0, 1.0);
@@ -23,7 +25,7 @@ class CalorieRing extends StatelessWidget {
       margin: const EdgeInsets.all(16),
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: c.card,
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
@@ -35,12 +37,12 @@ class CalorieRing extends StatelessWidget {
       ),
       child: Column(
         children: [
-          const Text(
+          Text(
             'Calories',
             style: TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 16,
-              color: Color(0xFF2D6A4F),
+              color: c.primary,
             ),
           ),
           const SizedBox(height: 16),
@@ -57,13 +59,13 @@ class CalorieRing extends StatelessWidget {
                     sections: [
                       PieChartSectionData(
                         value: progress,
-                        color: const Color(0xFF2D6A4F),
+                        color: c.primary,
                         radius: 18,
                         showTitle: false,
                       ),
                       PieChartSectionData(
                         value: 1 - progress,
-                        color: const Color(0xFFE8F5E9),
+                        color: c.track,
                         radius: 18,
                         showTitle: false,
                       ),
@@ -75,15 +77,15 @@ class CalorieRing extends StatelessWidget {
                   children: [
                     Text(
                       '${remaining.toInt()}',
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 36,
                         fontWeight: FontWeight.bold,
-                        color: Color(0xFF1B4332),
+                        color: c.textPrimary,
                       ),
                     ),
-                    const Text(
+                    Text(
                       'kcal left',
-                      style: TextStyle(fontSize: 13, color: Colors.grey),
+                      style: TextStyle(fontSize: 13, color: c.textSecondary),
                     ),
                   ],
                 ),
@@ -94,17 +96,9 @@ class CalorieRing extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              _buildStat(
-                'Eaten',
-                '${consumed.toInt()}',
-                const Color(0xFF2D6A4F),
-              ),
-              _buildStat(
-                'Burned',
-                '${burned.toInt()}',
-                const Color(0xFFE76F51),
-              ),
-              _buildStat('Goal', '${target.toInt()}', const Color(0xFF457B9D)),
+              _buildStat('Eaten', '${consumed.toInt()}', c.primary),
+              _buildStat('Burned', '${burned.toInt()}', c.warning),
+              _buildStat('Goal', '${target.toInt()}', c.slate),
             ],
           ),
         ],
@@ -123,7 +117,10 @@ class CalorieRing extends StatelessWidget {
             color: color,
           ),
         ),
-        Text(label, style: const TextStyle(fontSize: 12, color: Colors.grey)),
+        Text(
+          label,
+          style: const TextStyle(fontSize: 12, color: C0Theme.slateGrey),
+        ),
       ],
     );
   }

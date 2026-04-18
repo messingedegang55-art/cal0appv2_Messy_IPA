@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:cal0appv2/theme/app_theme.dart';
 import 'package:cal0appv2/views/users/userprofile_view.dart';
 import 'package:cal0appv2/views/homepages/tabs/home_tabs.dart';
 import 'package:cal0appv2/views/homepages/tabs/scan_tabs.dart';

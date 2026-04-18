@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:cal0appv2/theme/app_theme.dart';
 import 'package:cal0appv2/viewModels/usermodel/user_viewmodel.dart';
 
 class DashboardHeader extends StatelessWidget {
@@ -7,18 +8,14 @@ class DashboardHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final c = C0Theme.of(context);
     final userVM = context.watch<UserViewModel>();
     final name = userVM.userName.isNotEmpty ? userVM.userName : 'User';
     final String initial = name[0].toUpperCase();
 
     return Container(
       padding: const EdgeInsets.fromLTRB(20, 16, 20, 12),
-      color: const Color.fromARGB(
-        255,
-        87,
-        35,
-        176,
-      ), // Nice forest green choice for a health app!
+      color: c.header,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -26,13 +23,16 @@ class DashboardHeader extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                _getDynamicGreeting(), // 3. Extracted logic to keep UI clean
-                style: const TextStyle(color: Colors.white70, fontSize: 13),
+                _getDynamicGreeting(),
+                style: const TextStyle(
+                  color: C0Theme.oatmealWhite,
+                  fontSize: 13,
+                ),
               ),
               Text(
                 name,
                 style: const TextStyle(
-                  color: Colors.white,
+                  color: C0Theme.oatmealWhite,
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
                 ),
@@ -40,11 +40,11 @@ class DashboardHeader extends StatelessWidget {
             ],
           ),
           CircleAvatar(
-            backgroundColor: Colors.white24,
+            backgroundColor: C0Theme.oatmealWhite,
             child: Text(
               initial,
               style: const TextStyle(
-                color: Colors.white,
+                color: C0Theme.charcoal,
                 fontWeight: FontWeight.bold,
               ),
             ),

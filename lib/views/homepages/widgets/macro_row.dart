@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:cal0appv2/theme/app_theme.dart';
 
 class MacroRow extends StatelessWidget {
   final List<dynamic> foodLogs;
@@ -7,27 +8,35 @@ class MacroRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final c = C0Theme.of(context);
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Row(
         children: [
-          _buildMacroCard('Protein', 82, 150, const Color(0xFF2196F3)),
+          _buildMacroCard(c, 'Protein', 82, 150, c.primary),
           const SizedBox(width: 10),
-          _buildMacroCard('Carbs', 145, 250, const Color(0xFFFF9800)),
+          _buildMacroCard(c, 'Carbs', 145, 250, c.success),
           const SizedBox(width: 10),
-          _buildMacroCard('Fat', 44, 65, const Color(0xFFE91E63)),
+          _buildMacroCard(c, 'Fat', 44, 65, c.slate),
         ],
       ),
     );
   }
 
-  Widget _buildMacroCard(String label, int current, int target, Color color) {
+  Widget _buildMacroCard(
+    C0Colors c,
+    String label,
+    int current,
+    int target,
+    Color color,
+  ) {
     final pct = (current / target).clamp(0.0, 1.0);
     return Expanded(
       child: Container(
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: c.card,
           borderRadius: BorderRadius.circular(16),
           boxShadow: [
             BoxShadow(
@@ -44,7 +53,7 @@ class MacroRow extends StatelessWidget {
               label,
               style: TextStyle(
                 fontSize: 11,
-                color: Colors.grey[600],
+                color: c.textSecondary,
                 fontWeight: FontWeight.w500,
               ),
             ),
@@ -70,7 +79,7 @@ class MacroRow extends StatelessWidget {
             const SizedBox(height: 4),
             Text(
               '/ ${target}g',
-              style: const TextStyle(fontSize: 10, color: Colors.grey),
+              style: TextStyle(fontSize: 10, color: c.textSecondary),
             ),
           ],
         ),

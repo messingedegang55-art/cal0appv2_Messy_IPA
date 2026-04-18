@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:cal0appv2/theme/app_theme.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cal0appv2/viewModels/theme_viewmodel.dart';
 import 'package:cal0appv2/viewModels/usermodel/user_viewmodel.dart';
 
 class UserProfileView extends StatefulWidget {
@@ -91,14 +93,15 @@ class _UserProfileViewState extends State<UserProfileView> {
   @override
   Widget build(BuildContext context) {
     final vm = Provider.of<UserViewModel>(context);
+    final c = C0Theme.of(context);
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('My Profile'),
-        backgroundColor: Colors.deepPurple,
-        foregroundColor: Colors.white,
+        title: Text('My Profile', style: TextStyle(color: c.textPrimary)),
+        backgroundColor: c.header,
+        foregroundColor: c.textPrimary,
       ),
-
+      backgroundColor: c.background,
       body: vm.isLoading
           ? const Center(child: CircularProgressIndicator())
           : SingleChildScrollView(
@@ -112,14 +115,14 @@ class _UserProfileViewState extends State<UserProfileView> {
                     Center(
                       child: CircleAvatar(
                         radius: 48,
-                        backgroundColor: Colors.deepPurple,
+                        backgroundColor: c.primary,
                         child: Text(
                           _userName.text.isNotEmpty
                               ? _userName.text[0].toUpperCase()
                               : '?',
                           style: const TextStyle(
                             fontSize: 36,
-                            color: Colors.white,
+                            color: C0Theme.oatmealWhite,
                           ),
                         ),
                       ),
@@ -128,16 +131,17 @@ class _UserProfileViewState extends State<UserProfileView> {
 
                     // Error / success messages
                     if (vm.errorMessage != null)
-                      _buildBanner(vm.errorMessage!, Colors.red),
+                      _buildBanner(vm.errorMessage!, c.warning),
                     if (vm.successMessage != null)
-                      _buildBanner(vm.successMessage!, Colors.green),
+                      _buildBanner(vm.successMessage!, c.success),
 
                     // Section: Account info
-                    _sectionTitle('Account Info'),
+                    _sectionTitle('Account Info', c),
                     _buildTextField(
                       _userName,
                       'Username',
                       Icons.person,
+                      c,
                       validator: (v) =>
                           v!.isEmpty ? 'Username is required' : null,
                     ),
@@ -145,12 +149,13 @@ class _UserProfileViewState extends State<UserProfileView> {
                       _userEmail,
                       'Email',
                       Icons.email,
+                      c,
                       validator: (v) =>
                           !v!.contains('@') ? 'Invalid email' : null,
                     ),
 
                     // Section: Body info
-                    _sectionTitle('Body Info'),
+                    _sectionTitle('Body Info', c),
                     Row(
                       children: [
                         Expanded(
@@ -158,6 +163,7 @@ class _UserProfileViewState extends State<UserProfileView> {
                             _weight,
                             'Weight (kg)',
                             Icons.monitor_weight,
+                            c,
                             isNumber: true,
                           ),
                         ),
@@ -167,6 +173,7 @@ class _UserProfileViewState extends State<UserProfileView> {
                             _height,
                             'Height (cm)',
                             Icons.height,
+                            c,
                             isNumber: true,
                           ),
                         ),
@@ -176,12 +183,12 @@ class _UserProfileViewState extends State<UserProfileView> {
                     // Birthday picker
                     const SizedBox(height: 12),
                     ListTile(
-                      tileColor: Colors.white,
+                      tileColor: c.card,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),
-                      leading: const Icon(Icons.cake, color: Colors.deepPurple),
-                      title: const Text('Birthday'),
+                      leading: Icon(Icons.cake, color: c.primary),
+                      title: Text('Birthday'),
                       subtitle: Text(
                         '${_birthday.day}/${_birthday.month}/${_birthday.year}',
                       ),
@@ -190,19 +197,28 @@ class _UserProfileViewState extends State<UserProfileView> {
                     const SizedBox(height: 12),
 
                     // Gender
-                    _buildDropdown('Gender', _gender, [
-                      'male',
-                      'female',
-                    ], (v) => setState(() => _gender = v!)),
+                    _buildDropdown(
+                      'Gender',
+                      _gender,
+                      ['male', 'female'],
+                      (v) => setState(() => _gender = v!),
+                      c,
+                    ),
 
                     // Goal
-                    _buildDropdown('Goal', _goal, [
-                      'maintain',
-                      'lose weight',
-                      'lose weight fast',
-                      'gain weight',
-                      'gain weight fast',
-                    ], (v) => setState(() => _goal = v!)),
+                    _buildDropdown(
+                      'Goal',
+                      _goal,
+                      [
+                        'maintain',
+                        'lose weight',
+                        'lose weight fast',
+                        'gain weight',
+                        'gain weight fast',
+                      ],
+                      (v) => setState(() => _goal = v!),
+                      c,
+                    ),
 
                     // Activity level
                     _buildDropdown(
@@ -216,14 +232,16 @@ class _UserProfileViewState extends State<UserProfileView> {
                         'extra active',
                       ],
                       (v) => setState(() => _activityLevel = v!),
+                      c,
                     ),
 
                     // Section: Change password
-                    _sectionTitle('Change Password'),
+                    _sectionTitle('Change Password', c),
                     _buildTextField(
                       _password,
                       'New Password',
                       Icons.lock,
+                      c,
                       obscure: true,
                     ),
                     const SizedBox(height: 8),
@@ -248,7 +266,7 @@ class _UserProfileViewState extends State<UserProfileView> {
                       height: 50,
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.deepPurple,
+                          backgroundColor: c.primary,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),
                           ),
@@ -256,7 +274,10 @@ class _UserProfileViewState extends State<UserProfileView> {
                         onPressed: () => _saveProfile(vm),
                         child: const Text(
                           'Save Profile',
-                          style: TextStyle(color: Colors.white, fontSize: 16),
+                          style: TextStyle(
+                            color: C0Theme.oatmealWhite,
+                            fontSize: 16,
+                          ),
                         ),
                       ),
                     ),
@@ -268,14 +289,14 @@ class _UserProfileViewState extends State<UserProfileView> {
     );
   }
 
-  Widget _sectionTitle(String title) => Padding(
+  Widget _sectionTitle(String title, C0Colors c) => Padding(
     padding: const EdgeInsets.symmetric(vertical: 12),
     child: Text(
       title,
-      style: const TextStyle(
+      style: TextStyle(
         fontSize: 16,
         fontWeight: FontWeight.bold,
-        color: Colors.deepPurple,
+        color: c.primary,
       ),
     ),
   );
@@ -295,7 +316,8 @@ class _UserProfileViewState extends State<UserProfileView> {
   Widget _buildTextField(
     TextEditingController controller,
     String label,
-    IconData icon, {
+    IconData icon,
+    C0Colors c, {
     bool obscure = false,
     bool isNumber = false,
     String? Function(String?)? validator,
@@ -308,9 +330,9 @@ class _UserProfileViewState extends State<UserProfileView> {
       validator: validator,
       decoration: InputDecoration(
         labelText: label,
-        prefixIcon: Icon(icon, color: Colors.deepPurple),
+        prefixIcon: Icon(icon, color: c.textPrimary),
         filled: true,
-        fillColor: Colors.white,
+        fillColor: c.textSecondary,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
           borderSide: BorderSide.none,
@@ -324,14 +346,15 @@ class _UserProfileViewState extends State<UserProfileView> {
     String value,
     List<String> items,
     void Function(String?) onChanged,
+    C0Colors c,
   ) => Padding(
     padding: const EdgeInsets.only(bottom: 12),
     child: DropdownButtonFormField<String>(
-      initialValue: value,
+      value: value,
       decoration: InputDecoration(
         labelText: label,
         filled: true,
-        fillColor: Colors.white,
+        fillColor: c.card,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
           borderSide: BorderSide.none,

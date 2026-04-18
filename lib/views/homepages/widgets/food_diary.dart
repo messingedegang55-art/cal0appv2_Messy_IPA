@@ -1,18 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:cal0appv2/theme/app_theme.dart';
 
 class FoodDiary extends StatelessWidget {
-  final List foodLogs;
+  final List<dynamic> foodLogs;
   final VoidCallback onAdd;
 
   const FoodDiary({super.key, required this.foodLogs, required this.onAdd});
 
   @override
   Widget build(BuildContext context) {
+    final c = C0Theme.of(context);
+
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: c.card,
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
@@ -28,31 +31,31 @@ class FoodDiary extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text(
+              Text(
                 'Food Diary',
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 15,
-                  color: Color(0xFF1B4332),
+                  color: c.textPrimary,
                 ),
               ),
               TextButton.icon(
                 onPressed: onAdd,
-                icon: const Icon(Icons.add, size: 16, color: Color(0xFF2D6A4F)),
-                label: const Text(
+                icon: Icon(Icons.add, size: 16, color: c.primary),
+                label: Text(
                   'Add',
-                  style: TextStyle(color: Color(0xFF2D6A4F), fontSize: 13),
+                  style: TextStyle(color: c.primary, fontSize: 13),
                 ),
               ),
             ],
           ),
           const SizedBox(height: 8),
           foodLogs.isEmpty
-              ? _buildEmpty()
+              ? _buildEmpty(c)
               : Column(
                   children: foodLogs
                       .take(5)
-                      .map<Widget>((log) => _buildItem(log))
+                      .map<Widget>((log) => _buildItem(log, c))
                       .toList(),
                 ),
         ],
@@ -60,11 +63,11 @@ class FoodDiary extends StatelessWidget {
     );
   }
 
-  Widget _buildItem(log) {
+  Widget _buildItem(dynamic log, C0Colors c) {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 10),
-      decoration: const BoxDecoration(
-        border: Border(bottom: BorderSide(color: Color(0xFFF0F0F0), width: 1)),
+      decoration: BoxDecoration(
+        border: Border(bottom: BorderSide(color: c.track, width: 1)),
       ),
       child: Row(
         children: [
@@ -72,14 +75,10 @@ class FoodDiary extends StatelessWidget {
             width: 36,
             height: 36,
             decoration: BoxDecoration(
-              color: const Color(0xFFE8F5E9),
+              color: c.track,
               borderRadius: BorderRadius.circular(10),
             ),
-            child: const Icon(
-              Icons.restaurant,
-              size: 18,
-              color: Color(0xFF2D6A4F),
-            ),
+            child: Icon(Icons.restaurant, size: 18, color: c.primary),
           ),
           const SizedBox(width: 12),
           Expanded(
@@ -88,23 +87,24 @@ class FoodDiary extends StatelessWidget {
               children: [
                 Text(
                   log.foodLogName,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontWeight: FontWeight.w500,
                     fontSize: 14,
+                    color: c.textPrimary,
                   ),
                 ),
                 Text(
                   log.foodLogDate.toString().split(' ')[0],
-                  style: TextStyle(fontSize: 11, color: Colors.grey[500]),
+                  style: TextStyle(fontSize: 11, color: c.textSecondary),
                 ),
               ],
             ),
           ),
           Text(
             '${log.calorieIntake} kcal',
-            style: const TextStyle(
+            style: TextStyle(
               fontWeight: FontWeight.bold,
-              color: Color(0xFF2D6A4F),
+              color: c.primary,
               fontSize: 13,
             ),
           ),
@@ -113,17 +113,17 @@ class FoodDiary extends StatelessWidget {
     );
   }
 
-  Widget _buildEmpty() {
+  Widget _buildEmpty(C0Colors c) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 20),
       child: Center(
         child: Column(
           children: [
-            Icon(Icons.no_food, size: 40, color: Colors.grey[300]),
+            Icon(Icons.no_food, size: 40, color: c.textSecondary),
             const SizedBox(height: 8),
             Text(
               'No food logged today',
-              style: TextStyle(color: Colors.grey[400], fontSize: 13),
+              style: TextStyle(color: c.textSecondary, fontSize: 13),
             ),
           ],
         ),

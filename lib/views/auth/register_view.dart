@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:cal0appv2/viewModels/viewauth/register_viewmodel.dart';
 import 'package:cal0appv2/viewModels/viewauth/auth_viewmodel.dart';
 
 class RegisterView extends StatefulWidget {
@@ -34,7 +35,7 @@ class _RegisterViewState extends State<RegisterView> {
     super.dispose();
   }
 
-  Future<void> _register(AuthViewModel vm) async {
+  Future<void> _register(RegisterViewModel vm) async {
     if (!_formKey.currentState!.validate()) return;
 
     final success = await vm.register(
@@ -73,7 +74,7 @@ class _RegisterViewState extends State<RegisterView> {
 
   @override
   Widget build(BuildContext context) {
-    final vm = Provider.of<AuthViewModel>(context);
+    final vm = Provider.of<RegisterViewModel>(context);
 
     return Scaffold(
       appBar: AppBar(

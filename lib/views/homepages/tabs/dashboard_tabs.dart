@@ -1,3 +1,4 @@
+import 'package:cal0appv2/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -35,7 +36,7 @@ class _DashboardTabState extends State<DashboardTab> {
     final uid = FirebaseAuth.instance.currentUser!.uid;
 
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 87, 35, 176),
+      backgroundColor: C0Theme.deepSage,
       body: SafeArea(
         child: vm.isLoading
             ? const Center(

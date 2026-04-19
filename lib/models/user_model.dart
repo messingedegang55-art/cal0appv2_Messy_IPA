@@ -57,10 +57,10 @@ class UserModel {
     if (birthday == null) return null;
 
     final today = DateTime.now();
-    int calculatedAge = today.year - birthday!.year;
+    int calculatedAge = today.year - birthday.year;
 
-    if (today.month < birthday!.month ||
-        (today.month == birthday!.month && today.day < birthday!.day)) {
+    if (today.month < birthday.month ||
+        (today.month == birthday.month && today.day < birthday.day)) {
       calculatedAge--;
     }
 

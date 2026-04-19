@@ -25,11 +25,9 @@ class _DashboardTabState extends State<DashboardTab> {
     super.initState();
     final uid = FirebaseAuth.instance.currentUser!.uid;
     Future.microtask(() {
-      Provider.of<DashboardViewModel>(
-        context,
-        listen: false,
-      ).loadDashboard(uid);
-      Provider.of<FoodLogViewModel>(context, listen: false).loadFoodLogs();
+      if (!mounted) return;
+      context.read<DashboardViewModel>().loadDashboard(uid);
+      context.read<FoodLogViewModel>().loadFoodLogs();
     });
   }
 

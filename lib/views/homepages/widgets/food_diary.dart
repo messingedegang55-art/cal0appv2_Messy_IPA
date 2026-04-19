@@ -4,7 +4,6 @@ import 'package:cal0appv2/theme/app_theme.dart';
 import 'package:cal0appv2/models/foodlog_model.dart';
 import 'package:cal0appv2/viewModels/foodlog_viewmodel.dart';
 import 'package:cal0appv2/views/homepages/widgets/food_sheet.dart';
-import 'package:cal0appv2/viewModels/dashboard/dashboard_viewmodel.dart';
 
 class FoodDiary extends StatelessWidget {
   const FoodDiary({super.key});
